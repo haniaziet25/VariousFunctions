@@ -73,16 +73,114 @@ IniRead, TranspIni, 			VariousFunctions.ini, 	Menu memory, Transparency, 			NO
 IniRead, F13Ini, 				VariousFunctions.ini, 	Menu memory, F13, 					NO
 IniRead, F14Ini, 				VariousFunctions.ini, 	Menu memory, F14, 					NO
 IniRead, F15Ini, 				VariousFunctions.ini, 	Menu memory, F15, 					NO
-IniRead, TopIni,				VariousFunctions.ini, 	Menu memory, Always on top 			NO
-
+IniRead, TopIni,				VariousFunctions.ini, 	Menu memory, Always on top,			NO
+IniRead, KeePassIni,			VariousFunctions.ini, 	Menu memory, KeePass,				NO
+IniRead, HyperIni,				VariousFunctions.ini, 	Menu memory, Hyperlink,				NO
+IniRead, HideIni,				VariousFunctions.ini, 	Menu memory, Hidetext,				NO
+IniRead, ShowIni,				VariousFunctions.ini, 	Menu memory, Showtext,				NO
+IniRead, TemplateIni,			VariousFunctions.ini, 	Menu memory, Template,				NO
 ;/////////////////////////////// - TRAY LABEL - //////////////////////////////////////
 
 ;~ Tray:
 ;--------------------------------------------------	
 Menu, Tray, NoStandard
 ;--------------------------------------------------	
+Menu, Subshow, Add, Yes, Showyes
+	Menu, Subshow, Add, No,  Showno
+	Menu, Subshow, Add, Description,  ShowDesc
+		if(HyperIni = "NO")
+			{
+				Menu, Subshow, Check, No 
+				Menu, Subshow, UnCheck, Yes 
+				F_Show("No")	
+			}
+		if (HyperIni = "YES")
+			{
+				Menu, Subshow, Check, Yes 
+				Menu, Subshow, UnCheck, No
+				F_Show("Yes")
+			}
 
-Menu, SubmenuTop, Add, Yes, TopYes
+	Menu, Subhide, Add, Yes, Hideyes
+	Menu, Subhide, Add, No, Hideno 
+	Menu, Subhide, Add, Description, HideDesc
+		if(HideIni = "NO")
+		{
+			Menu, Subhide, Check, No 
+			Menu, Subhide, UnCheck, Yes 
+			F_Hide("No")	
+		}
+		if (HideIni = "YES")
+		{
+			Menu, Subhide, Check, Yes 
+			Menu, Subhide, UnCheck, No
+			F_Hide("Yes")
+		}
+
+
+	Menu, Subhyper, Add, Yes, Hyperyes 
+	Menu, Subhyper, Add, No, Hyperno
+	Menu, Subhyper, Add,  Description, HyperDesc 
+		if(HyperIni = "NO")
+		{
+			Menu, Subhyper, Check, No 
+			Menu, Subhyper, UnCheck, Yes 
+			F_Hyper("No")	
+		}
+		if (HyperIni = "YES")
+		{
+			Menu, Subhyper, Check, Yes 
+			Menu, Subhyper, UnCheck, No
+			F_Hyper("Yes")
+		}
+
+	Menu, Subhidden, Add, Show, :Subshow
+	Menu, Subhidden, Add, Hide, :Subhide
+	
+	
+
+	Menu, Subtemplate, Add, Yes, Templateyes 
+	Menu, Subtemplate, Add, No, Templateno
+	Menu, Subtemplate, Add,  Description, TemplateDesc 
+		if(TemplateIni = "NO")
+		{
+			Menu, Subtemplate, Check, No 
+			Menu, Subtemplate, UnCheck, Yes 
+			F_Template("No")	
+		}
+		if (TemplateIni = "YES")
+		{
+			Menu, Subtemplate, Check, Yes 
+			Menu, Subtemplate, UnCheck, No
+			F_Template("Yes")
+		}
+
+
+	Menu, SubmenuWord, Add, Hyperlink, :Subhyper
+	Menu, SubmenuWord, Add, Hidden text, :Subhidden 
+	Menu, SubmenuWord, Add, Template, :Subtemplate
+Menu, Tray, Add, Functions in MSWord, :SubmenuWord
+;--------------------------------------------------	
+
+Menu, SubmenuKeepass, Add, Yes, KeepassYes
+	Menu, SubmenuKeepass, Add, No, KeepassNo
+	Menu, SubmenuKeepass, Add, Description, KeepassDesc
+Menu, Tray, Add, KeePass (Ctrl + Shift + k), :SubmenuKeepass
+if(KeePassIni = "NO")
+{
+	Menu, SubmenuKeepass, Check, No 
+	Menu, SubmenuKeepass, UnCheck, Yes 
+	F_KeePass("No")	
+}
+if (KeePassIni = "YES")
+{
+	Menu, SubmenuKeepass, Check, Yes 
+	Menu, SubmenuKeepass, UnCheck, No
+	F_KeePass("Yes")
+}
+;--------------------------------------------------	
+
+	Menu, SubmenuTop, Add, Yes, TopYes
 	Menu, SubmenuTop, Add, No, TopNo
 	Menu, SubmenuTop, Add, Description, TopDesc
 Menu, Tray, Add, Always on top (Ctrl + Windows + F8), :SubmenuTop
@@ -99,10 +197,7 @@ if (TopIni = "YES")
 	F_Top("Yes")
 }
 ;--------------------------------------------------	
-
-
-
-Menu, SubF13, Add, Yes, F13yes 
+	Menu, SubF13, Add, Yes, F13yes 
 	Menu, SubF13, Add, No, F13no
 	Menu, SubF13, Add,  Description, F13Desc 
 	Menu, SubF14, Add, Yes, F14yes 
@@ -113,8 +208,7 @@ Menu, SubF13, Add, Yes, F13yes
 	Menu, SubF15, Add,  Description, F15Desc 
 	Menu, SubmenuPedals, Add, F13, :SubF13 
 	Menu, SubmenuPedals, Add, F14, :SubF14 
-	Menu, SubmenuPedals, Add, F15, :SubF15
-	
+	Menu, SubmenuPedals, Add, F15, :SubF15	
 Menu, Tray, Add, Pedals (F13/F14/F15), :SubmenuPedals
 if(F13Ini = "NO")
 {
@@ -389,18 +483,175 @@ return
 About:
 MsgBox, Authors: Maciej Slojewski, Hanna Zietak, Jakub Masiak    		Version: 1.1.1
 return
+;--------------------------------------------------
+;-------------------------------------------------
+;--------------------------------------------------
+;-------------------------------------------------
+;--------------------------------------------------
+;-------------------------------------------------
+Hyperyes:
+Menu,Subhyper, Check, Yes 
+Menu, Subhyper, Uncheck, No 
+F_Hyper("Yes")
+return
 
+Hyperno:
+Menu, Subhyper, Check, No 
+Menu, Subhyper, Uncheck, Yes
+F_Hyper("No")
+return
+
+HyperDesc:
+Msgbox, Adds hyperlink in selected text in Microsoft Word, by pressing {Ctrl} + k
+MsgBox, 4, ,Would you like to activate it?
+IfMsgBox, Yes
+{
+Menu, Subhyper, Check, Yes 
+Menu, Subhyper, UnCheck, No 
+F_Hyper("Yes")
+}
+else, 
+{
+Menu, Subhyper, Check, No
+Menu, Subhyper, UnCheck, Yes  
+F_Hyper("No")
+}
+return
+;--------------------------------------------------
+;-------------------------------------------------
+
+Hideyes:
+Menu, Subhide, Check, Yes 
+Menu, Subhide, Uncheck, No 
+F_Hide("Yes")
+return
+
+Hideno:
+Menu, Subhide, Check, No 
+Menu, Subhide, Uncheck, Yes
+F_Hide("No")
+return
+
+HideDesc:
+Msgbox, Hides selected text in Microsoft Word, by pressing {Shift} + {Ctrl} + h
+MsgBox, 4, ,Would you like to activate it?
+IfMsgBox, Yes
+{
+Menu, Subhide, Check, Yes 
+Menu, Subhide, UnCheck, No 
+F_Hide("Yes")
+}
+else, 
+{
+Menu, Subhide, Check, No
+Menu, Subhide, UnCheck, Yes  
+F_Hide("No")
+}
+return
+;--------------------------------------------------
+;-------------------------------------------------
+Showyes:
+Menu, Subshow, Check, Yes 
+Menu, Subshow, Uncheck, No 
+F_Show ("Yes")
+return
+
+Showno:
+Menu, Subshow, Check, No 
+Menu, Subshow, Uncheck, Yes
+F_Show("No")
+return
+
+ShowDesc:
+Msgbox, Shows hidden text and special signs in Microsoft Word, by pressing {Ctrl} + *
+MsgBox, 4, ,Would you like to activate it?
+IfMsgBox, Yes
+{
+Menu, Subshow, Check, Yes 
+Menu, Subshow, UnCheck, No 
+F_Show("Yes")
+}
+else, 
+{
+Menu, Subshow, Check, No
+Menu, Subshow, UnCheck, Yes  
+F_Show("No")
+}
+return
+
+;--------------------------------------------------
+;-------------------------------------------------
+Templateyes:
+Menu, Subtemplate, Check, Yes 
+Menu, Subtemplate, Uncheck, No 
+F_Template("Yes")
+return
+Templateno:
+Menu, Subtemplate, Check, Yes 
+Menu, Subtemplate, Uncheck, No 
+F_Template("Yes")
+return
+
+TemplateDesc:
+Msgbox, Adds Polish or English template in Microsoft Word, by pressing {Ctrl} + {Shift} + t
+MsgBox, 4, ,Would you like to activate it?
+IfMsgBox, Yes
+{
+Menu, Subtemplate, Check, Yes 
+Menu, Subtemplate, UnCheck, No 
+F_Template("Yes")
+}
+else, 
+{
+Menu, Subtemplate, Check, No
+Menu, Subtemplate, UnCheck, Yes  
+F_Template("No")
+}
+return
+;--------------------------------------------------
+;-------------------------------------------------
+
+KeepassYes:
+Menu, SubmenuKeepass, Check, Yes 
+Menu, SubmenuKeepass, Uncheck, No 
+F_KeePass("Yes")
+return
+
+KeepassNo:
+Menu, SubmenuKeepass, Check, Yes 
+Menu, SubmenuKeepass, Uncheck, No 
+F_KeePass("No")
+return
+
+KeepassDesc:
+Msgbox, Runs the KeePass 2 application, by pressing {Shift} + {Ctrl} + k 
+MsgBox, 4, ,Would you like to activate it?
+IfMsgBox, Yes
+{
+Menu, SubmenuKeepass, Check, Yes 
+Menu, SubmenuKeepass, UnCheck, No 
+F_KeePass("Yes")
+}
+else, 
+{
+Menu, SubmenuKeepass, Check, No
+Menu, SubmenuKeepass, UnCheck, Yes  
+F_KeePass("No")
+}
+return
 ;--------------------------------------------------
 ;-------------------------------------------------
 TopYes:
 Menu, SubmenuTop, Check, Yes 
 Menu, SubmenuTop, Uncheck, No 
 F_Top("Yes")
+return
 
 TopNo:
 Menu, SubmenuTop, Check, Yes 
 Menu, SubmenuTop, Uncheck, No 
 F_Top("No")
+return
 
 TopDesc:
 Msgbox, Toggle window parameter always on top, by pressing {Ctrl} + {Windows} + {F8}
@@ -435,7 +686,21 @@ F_F13("No")
 return
 
 F13Desc:
-MsgBox, 
+MsgBox, Switches windows in the system tray, by pressing {F13} 
+MsgBox, 4, ,Would you like to activate it?
+IfMsgBox, Yes
+{
+Menu, SubF13, Check, Yes 
+Menu, SubF13, UnCheck, No 
+F_F13("Yes")
+}
+else, 
+{
+Menu, SubF13, Check, No
+Menu, SubF13, UnCheck, Yes  
+F_F13("No")
+}
+return
 
 
 F14yes:
@@ -448,9 +713,24 @@ F14no:
 menu, SubF14, check, No 
 menu, SubF14, uncheck, Yes
 F_F14("No")
+return
 
 F14Desc:
-
+Msgbox, Immediately resets the hotstring recognizer, by pressing {F13}
+MsgBox, 4, ,Would you like to activate it?
+IfMsgBox, Yes
+{
+Menu, SubF14, Check, Yes 
+Menu, SubF14, UnCheck, No 
+F_F14("Yes")
+}
+else, 
+{
+Menu, SubF14, Check, No
+Menu, SubF14, UnCheck, Yes  
+F_F14("No")
+}
+return
 
 
 F15yes:
@@ -463,9 +743,24 @@ F15no:
 menu, SubF15, check, No 
 menu, SubF15, uncheck, Yes
 F_F15("No")
+return
 
 F15Desc:
-
+Msgbox, Makes a beep sound, by pressing {F15}
+MsgBox, 4, ,Would you like to activate it?
+IfMsgBox, Yes
+{
+Menu, SubF15, Check, Yes 
+Menu, SubF15, UnCheck, No 
+F_F15("Yes")
+}
+else, 
+{
+Menu, SubF15, Check, No
+Menu, SubF15, UnCheck, Yes  
+F_F15("No")
+}
+return
 
 ;--------------------------------------------------
 ;-------------------------------------------------
@@ -1368,7 +1663,7 @@ F_Transparency(MyTransp) ;toggle window transparency
 
 F_transp()
 { 
-	global
+	global 
 	static WindowTransparency := false
 	if (WindowTransparency = false)
 		{
@@ -1383,7 +1678,7 @@ F_transp()
 		WinSet, Transparent, 255, A
 		WindowTransparency := false
 		ToolTip, This window atribut Transparency was changed to opaque ;, % A_CaretX, % A_CaretY - 20
-		SetTimer, TurnOffTooltip, -2000
+		;SetTimer, TurnOffTooltip, -2000
 		return
 		}
 
@@ -1393,12 +1688,12 @@ F_F13(myf13)
 {
 	if (myf13="Yes")
 	{
-		Hotkey, F11, F_f13key, on 
+		Hotkey, F13, F_f13key, on 
 		IniWrite, YES, VariousFunctions.ini, Menu memory, F13
 	}
 	if (myf13="No")
 	{
-		Hotkey, F11, F_f13key, off
+		Hotkey, F13, F_f13key, off
 		IniWrite, NO, VariousFunctions.ini, Menu memory, F13
 	}
 
@@ -1417,12 +1712,12 @@ F_F14(myf14)
 {
 	if (myf14="Yes")
 	{
-		Hotkey, F12, F_f14key, on 
+		Hotkey, F14, F_f14key, on 
 		IniWrite, YES, VariousFunctions.ini, Menu memory, F14
 	}
 		if 	(myf14="No")
 	{
-		Hotkey, F12, F_f14key, off
+		Hotkey, F14, F_f14key, off
 		IniWrite, NO, VariousFunctions.ini, Menu memory, F14
 	}
 }
@@ -1442,12 +1737,12 @@ F_F15(myf15)
 	
 	if (myf15="Yes")
 	{
-		Hotkey, F10, F_f15key, on 
+		Hotkey, F15, F_f15key, on 
 		IniWrite, YES, VariousFunctions.ini, Menu memory, F15
 	}
 	if 	(myf14="No")
 	{
-		Hotkey, F10, F_f15key, off
+		Hotkey, F15, F_f15key, off
 		IniWrite, NO, VariousFunctions.ini, Menu memory, F15
 	}
 }
@@ -1460,40 +1755,202 @@ F_f15key()
 ;*************************************************************************
 F_Top(myalways)
 {
+	if (myalways= "Yes")
+	{
+		Hotkey, ^#F8, F_always, on 
+		IniWrite, YES, VariousFunctions.ini, Menu memory, Always on top
+	}
+	if (myalways= "No")
+	{
+		Hotkey, ^#F8, F_always, off
+		IniWrite, NO, VariousFunctions.ini, Menu memory, Always on top
+	}
+}
 
+
+F_always()
+{
+	WinSet, AlwaysOnTop, toggle, A 
+	ToolTip, This window atribut "Always on Top" is toggled ;, % A_CaretX, % A_CaretY - 20
+	SetTimer, TurnOffTooltip, -2000
+return
+}
+;*************************************************************************
+F_KeePass(mykeepass)
+{
+	if (mykeepass= "Yes")
+	{
+		Hotkey, +^k, F_keepass2, on
+		IniWrite, YES, VariousFunctions.ini, Menu memory, KeePass
+	}
+	if (mykeepass= "No")
+	{
+		Hotkey, +^k, F_keepass2, off
+		IniWrite, NO, VariousFunctions.ini, Menu memory, KeePass
+	}
+}
+
+F_keepass2()
+{
+	Run, C:\Program Files (x86)\KeePass Password Safe 2\KeePass.exe 
+}
+;*************************************************************************
+F_Hyper(myhyper)
+{
+	if (myhyper= "Yes")
+	{
+		Hotkey, ^k, F_hiper, on  
+		IniWrite, YES, VariousFunctions.ini, Menu memory, Hyperlink
+	
+	}
+	if (myhyper= "No")
+	{
+		Hotkey, ^k, F_hiper, off
+		IniWrite, NO, VariousFunctions.ini, Menu memory, Hyperlink
+	
+	}
+}
+
+F_hiper()
+{
+	Send, {LAlt Down}{Ctrl Down}h{Ctrl Up}{LAlt Up}
+}
+;*************************************************************************
+F_Hide(myhide)
+{
+	if (myhide= "Yes")
+	{
+		Hotkey, +^h, HideSelectedText, on  
+		IniWrite, YES, VariousFunctions.ini, Menu memory, Hidetext
+	
+	}
+	if (myhide= "No")
+	{
+		Hotkey, +^h, HideSelectedText, off
+		IniWrite, NO, VariousFunctions.ini, Menu memory, Hidetext
+	
+	}
+}
+
+HideSelectedText() ; 2019-10-22 2019-11-08
+	{
+	global oWord
+	global  WordTrue, WordFalse
+
+	oWord := ComObjActive("Word.Application")
+	OurTemplate := oWord.ActiveDocument.AttachedTemplate.FullName
+	if (InStr(OurTemplate, "TQ-S402-pl_OgolnyTechDok.dotm") or InStr(OurTemplate, "TQ-S402-en_OgolnyTechDok.dotm"))
+	{
+		nazStyl := oWord.Selection.Style.NameLocal
+		if (nazStyl = "Ukryty ms")
+			Send, ^{Space}
+		else
+		{
+			language := oWord.Selection.Range.LanguageID
+			oWord.Selection.Paragraphs(1).Range.LanguageID := language
+			TemplateStyle("Ukryty ms")
+		}
+	}
+	else
+	{
+		StateOfHidden := oWord.Selection.Font.Hidden
+		oWord.Selection.Font.Hidden := WordTrue
+		If (StateOfHidden == WordFalse)
+		{
+			oWord.Selection.Font.Hidden := WordTrue	
+			}
+		else
+		{
+			oWord.Selection.Font.Hidden := WordFalse
+		}
+	}
+	
+	oWord := "" ; Clear global COM objects when done with them
+	}
+;*************************************************************************
+F_Show(myshow)
+{
+	if (myshow= "Yes")
+	{
+		Hotkey, ^*, ShowHiddenText, on  
+		IniWrite, YES, VariousFunctions.ini, Menu memory, Showtext
+	
+	}
+	if (myshow= "No")
+	{
+		Hotkey, ^*, ShowHiddenText, off
+		IniWrite, NO, VariousFunctions.ini, Menu memory, Showtext
+	
+	}
+}
+
+ShowHiddenText(AdditionalText := "")
+;~ by Jakub Masiak
+{
+	global oWord
+	Base(AdditionalText)
+	oWord := ComObjActive("Word.Application")
+	HiddenTextState := oWord.ActiveWindow.View.ShowHiddenText
+	if (oWord.ActiveWindow.View.ShowAll = -1)
+	{
+		oWord.ActiveWindow.View.ShowAll := 0
+		oWord.ActiveWindow.View.ShowTabs := 0
+		oWord.ActiveWindow.View.ShowSpaces := 0
+		oWord.ActiveWindow.View.ShowParagraphs := 0
+		oWord.ActiveWindow.View.ShowHyphens := 0
+		oWord.ActiveWindow.View.ShowObjectAnchors := 0
+		oWord.ActiveWindow.View.ShowHiddenText := 0
+	}
+	else
+	{
+		oWord.ActiveWindow.View.ShowAll := -1
+		oWord.ActiveWindow.View.ShowTabs := -1
+		oWord.ActiveWindow.View.ShowSpaces := -1
+		oWord.ActiveWindow.View.ShowParagraphs := -1
+		oWord.ActiveWindow.View.ShowHyphens := -1
+		oWord.ActiveWindow.View.ShowObjectAnchors := -1
+		oWord.ActiveWindow.View.ShowHiddenText := -1
+	}
+	oWord := ""
+	return
+}
+;*************************************************************************
+F_Template(mytemplate)
+{
+	if (mytemplate= "Yes")
+	{
+		Hotkey, ^+t, F_mytemplate, on  
+		IniWrite, YES, VariousFunctions.ini, Menu memory, Template 
+	
+	}
+	if (mytemplate= "No")
+	{
+		Hotkey, ^+t,  F_mytemplate, off
+		IniWrite, NO, VariousFunctions.ini, Menu memory, Template
+	
+	}
+}
+F_mytemplate()
+{
+oWord := ComObjActive("Word.Application")
+OurTemplate := oWord.ActiveDocument.AttachedTemplate.FullName
+
+if (InStr(OurTemplate, "TQ-S402-pl_OgolnyTechDok.dotm") or InStr(OurTemplate, "TQ-S402-en_OgolnyTechDok.dotm"))
+{
+	oWord.ActiveDocument.AttachedTemplate := ""
+	oWord.ActiveDocument.UpdateStylesOnOpen := -1
+	MsgBox,0x40,, % MsgText("Szablon został odłączony.")
+}
+oWord := ""
+return
 }
 ;*************************************************************************
 
 
 ; These are valid for any keyboard
 +^F1::DllCall("PowrProf\SetSuspendState", "int", 0, "int", 0, "int", 0)		; Suspend:											
-+^k::Run, C:\Program Files (x86)\KeePass Password Safe 2\KeePass.exe 			; run KeePass application (password manager)
-
-^#F8:: 			; Ctrl + Windows + F8, toggle window parameter always on top
-	WinSet, AlwaysOnTop, toggle, A 
-	ToolTip, This window atribut "Always on Top" is toggled ;, % A_CaretX, % A_CaretY - 20
-	SetTimer, TurnOffTooltip, -2000
-return
 
 ; ----------------- SECTION OF ADDITIONAL I/O DEVICES -------------------------------
-; pedals (Foot Switch FS3-P, made by https://pcsensor.com/)
-
-; F13:: ; przełaczanie kart na pasku zadań wraz z wydawanym beepnięciem 
-; 	Send, #t
-; 	SoundBeep, 1000, 200 ; freq = 50, duration = 200 ms
-; return
-
-; F14:: ; reset of AutoHotkey string recognizer
-; 	;~ Send, {Left}{Right}
-; 	Hotstring("Reset")
-; 	SoundBeep, 1500, 200 ; freq = 100, duration = 200 ms
-; 	ToolTip, [%A_thishotKey%] reset of AutoHotkey string recognizer, % A_CaretX, % A_CaretY - 20
-; 	SetTimer, TurnOffTooltip, -2000
-; return
-
-; ~F15:: ; Reserved for CopyQ
-; 	SoundBeep, 2000, 200 ; freq = 500, duration = 200 ms
-; return
 
 ; computer mouse: OPTO 325 (PS/2 interface and PS/2 to USB adapter): 3 (top) + 2 (side) buttons, 2x wheels, but only one is recognizable by AHK.
 
@@ -1517,30 +1974,30 @@ return
 ; }
 ; return
 
-^k::  ;wstawianie hiperłącza (Hania)
-Send, {LAlt Down}{Ctrl Down}h{Ctrl Up}{LAlt Up}
-return
+; ^k::  ;wstawianie hiperłącza (Hania)
+; Send, {LAlt Down}{Ctrl Down}h{Ctrl Up}{LAlt Up}
+; return
 
-+^h:: ; Shift + Ctrl + H - hide text; there is dedicated style to do that
-	HideSelectedText()
-return
+; +^h:: ; Shift + Ctrl + H - hide text; there is dedicated style to do that
+; 	HideSelectedText()
+; return
 
-^*:: 
-ShowHiddenText("Włącz/wyłącz tekst ukryty")
-return
+; ^*:: 
+; ShowHiddenText("Włącz/wyłącz tekst ukryty")
+; return
 
-^+t::
-oWord := ComObjActive("Word.Application")
-OurTemplate := oWord.ActiveDocument.AttachedTemplate.FullName
+; ^+t::
+; oWord := ComObjActive("Word.Application")
+; OurTemplate := oWord.ActiveDocument.AttachedTemplate.FullName
 
-if (InStr(OurTemplate, "TQ-S402-pl_OgolnyTechDok.dotm") or InStr(OurTemplate, "TQ-S402-en_OgolnyTechDok.dotm"))
-{
-	oWord.ActiveDocument.AttachedTemplate := ""
-	oWord.ActiveDocument.UpdateStylesOnOpen := -1
-	MsgBox,0x40,, % MsgText("Szablon został odłączony.")
-}
-oWord := ""
-return
+; if (InStr(OurTemplate, "TQ-S402-pl_OgolnyTechDok.dotm") or InStr(OurTemplate, "TQ-S402-en_OgolnyTechDok.dotm"))
+; {
+; 	oWord.ActiveDocument.AttachedTemplate := ""
+; 	oWord.ActiveDocument.UpdateStylesOnOpen := -1
+; 	MsgBox,0x40,, % MsgText("Szablon został odłączony.")
+; }
+; oWord := ""
+; return
 
 +^x:: ; Shift + Ctrl + X - strike through the selected text 
 	StrikeThroughText()
@@ -1782,73 +2239,73 @@ SwitchBetweenWindowsOfWord()
         }
 }
 ; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-HideSelectedText() ; 2019-10-22 2019-11-08
-	{
-	global oWord
-	global  WordTrue, WordFalse
+; HideSelectedText() ; 2019-10-22 2019-11-08
+; 	{
+; 	global oWord
+; 	global  WordTrue, WordFalse
 
-	oWord := ComObjActive("Word.Application")
-	OurTemplate := oWord.ActiveDocument.AttachedTemplate.FullName
-	if (InStr(OurTemplate, "TQ-S402-pl_OgolnyTechDok.dotm") or InStr(OurTemplate, "TQ-S402-en_OgolnyTechDok.dotm"))
-	{
-		nazStyl := oWord.Selection.Style.NameLocal
-		if (nazStyl = "Ukryty ms")
-			Send, ^{Space}
-		else
-		{
-			language := oWord.Selection.Range.LanguageID
-			oWord.Selection.Paragraphs(1).Range.LanguageID := language
-			TemplateStyle("Ukryty ms")
-		}
-	}
-	else
-	{
-		StateOfHidden := oWord.Selection.Font.Hidden
-		oWord.Selection.Font.Hidden := WordTrue
-		If (StateOfHidden == WordFalse)
-		{
-			oWord.Selection.Font.Hidden := WordTrue	
-			}
-		else
-		{
-			oWord.Selection.Font.Hidden := WordFalse
-		}
-	}
+; 	oWord := ComObjActive("Word.Application")
+; 	OurTemplate := oWord.ActiveDocument.AttachedTemplate.FullName
+; 	if (InStr(OurTemplate, "TQ-S402-pl_OgolnyTechDok.dotm") or InStr(OurTemplate, "TQ-S402-en_OgolnyTechDok.dotm"))
+; 	{
+; 		nazStyl := oWord.Selection.Style.NameLocal
+; 		if (nazStyl = "Ukryty ms")
+; 			Send, ^{Space}
+; 		else
+; 		{
+; 			language := oWord.Selection.Range.LanguageID
+; 			oWord.Selection.Paragraphs(1).Range.LanguageID := language
+; 			TemplateStyle("Ukryty ms")
+; 		}
+; 	}
+; 	else
+; 	{
+; 		StateOfHidden := oWord.Selection.Font.Hidden
+; 		oWord.Selection.Font.Hidden := WordTrue
+; 		If (StateOfHidden == WordFalse)
+; 		{
+; 			oWord.Selection.Font.Hidden := WordTrue	
+; 			}
+; 		else
+; 		{
+; 			oWord.Selection.Font.Hidden := WordFalse
+; 		}
+; 	}
 	
-	oWord := "" ; Clear global COM objects when done with them
-	}
+; 	oWord := "" ; Clear global COM objects when done with them
+; 	}
 
 ; -----------------------------------------------------------------------------------------------------------------------------
-ShowHiddenText(AdditionalText := "")
-;~ by Jakub Masiak
-{
-	global oWord
-	Base(AdditionalText)
-	oWord := ComObjActive("Word.Application")
-	HiddenTextState := oWord.ActiveWindow.View.ShowHiddenText
-	if (oWord.ActiveWindow.View.ShowAll = -1)
-	{
-		oWord.ActiveWindow.View.ShowAll := 0
-		oWord.ActiveWindow.View.ShowTabs := 0
-		oWord.ActiveWindow.View.ShowSpaces := 0
-		oWord.ActiveWindow.View.ShowParagraphs := 0
-		oWord.ActiveWindow.View.ShowHyphens := 0
-		oWord.ActiveWindow.View.ShowObjectAnchors := 0
-		oWord.ActiveWindow.View.ShowHiddenText := 0
-	}
-	else
-	{
-		oWord.ActiveWindow.View.ShowAll := -1
-		oWord.ActiveWindow.View.ShowTabs := -1
-		oWord.ActiveWindow.View.ShowSpaces := -1
-		oWord.ActiveWindow.View.ShowParagraphs := -1
-		oWord.ActiveWindow.View.ShowHyphens := -1
-		oWord.ActiveWindow.View.ShowObjectAnchors := -1
-		oWord.ActiveWindow.View.ShowHiddenText := -1
-	}
-	oWord := ""
-	return
-}
+; ShowHiddenText(AdditionalText := "")
+; ;~ by Jakub Masiak
+; {
+; 	global oWord
+; 	Base(AdditionalText)
+; 	oWord := ComObjActive("Word.Application")
+; 	HiddenTextState := oWord.ActiveWindow.View.ShowHiddenText
+; 	if (oWord.ActiveWindow.View.ShowAll = -1)
+; 	{
+; 		oWord.ActiveWindow.View.ShowAll := 0
+; 		oWord.ActiveWindow.View.ShowTabs := 0
+; 		oWord.ActiveWindow.View.ShowSpaces := 0
+; 		oWord.ActiveWindow.View.ShowParagraphs := 0
+; 		oWord.ActiveWindow.View.ShowHyphens := 0
+; 		oWord.ActiveWindow.View.ShowObjectAnchors := 0
+; 		oWord.ActiveWindow.View.ShowHiddenText := 0
+; 	}
+; 	else
+; 	{
+; 		oWord.ActiveWindow.View.ShowAll := -1
+; 		oWord.ActiveWindow.View.ShowTabs := -1
+; 		oWord.ActiveWindow.View.ShowSpaces := -1
+; 		oWord.ActiveWindow.View.ShowParagraphs := -1
+; 		oWord.ActiveWindow.View.ShowHyphens := -1
+; 		oWord.ActiveWindow.View.ShowObjectAnchors := -1
+; 		oWord.ActiveWindow.View.ShowHiddenText := -1
+; 	}
+; 	oWord := ""
+; 	return
+; }
 ; -----------------------------------------------------------------------------------------------------------------------------
 
 StrikeThroughText() ; 2019-10-03 2019-11-08
@@ -2218,6 +2675,9 @@ BBOK:
 	}
 	}
 return
+
+
+
 
 
 
