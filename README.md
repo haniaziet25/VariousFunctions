@@ -18,9 +18,9 @@ Shifts caret to the end.
 It works everywhere exept Word, because in Word Application this function already exists.
 3. **Chrome tab switcher** - Switche tabs in Google Chrome Browser, by pressing {Xbutton1} and {Xbutton2}
 4. **Foot switch** 
-5.    1. *F13* - Switch windows in the system tray, by pressing {F13}
-6.    2. *F14* - Immediately resets the hotstring recognizer, by pressing {F14}
-7.    3. *F15* -  Make a beep sound, by pressing {F15}
+   1. *F13* - Switch windows in the system tray, by pressing {F13}
+   2. *F14* - Immediately resets the hotstring recognizer, by pressing {F14}
+   3. *F15* -  Make a beep sound, by pressing {F15}
 8. **Functions in Microsoft Word** 
       1. *Align Left* - Align your content with the left margin in Microsoft Word, by pressing {Ctrl} + {Shift} + l
       2. *Apply Styles* - Open and close the Apply Styles window in Microsoft Word, by pressing {Ctrl} + {shift} + s
